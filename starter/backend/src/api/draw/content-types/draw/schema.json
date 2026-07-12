@@ -1,0 +1,69 @@
+{
+  "kind": "collectionType",
+  "collectionName": "draws",
+  "info": {
+    "singularName": "draw",
+    "pluralName": "draws",
+    "displayName": "Draw",
+    "description": "One prize draw within a lottery (1st, 2nd, ... up to 5th)"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "drawNumber": {
+      "type": "integer",
+      "required": true,
+      "min": 1,
+      "max": 5
+    },
+    "title": {
+      "type": "string"
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": ["house", "car", "phone", "cash", "other"],
+      "required": true
+    },
+    "prizeName": {
+      "type": "string",
+      "required": true
+    },
+    "prizeImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "drawDate": {
+      "type": "datetime"
+    },
+    "drawStatus": {
+      "type": "enumeration",
+      "enum": ["scheduled", "drawn"],
+      "default": "scheduled",
+      "required": true
+    },
+    "winnerTicketNumber": {
+      "type": "string"
+    },
+    "winnerDisplayName": {
+      "type": "string"
+    },
+    "drawnAt": {
+      "type": "datetime"
+    },
+    "winningTicket": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::ticket.ticket",
+      "inversedBy": "wonDraws",
+      "private": true
+    },
+    "lottery": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::lottery.lottery",
+      "inversedBy": "draws"
+    }
+  }
+}

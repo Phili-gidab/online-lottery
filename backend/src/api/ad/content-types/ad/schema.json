@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "ads",
+  "info": {
+    "singularName": "ad",
+    "pluralName": "ads",
+    "displayName": "Ad",
+    "description": "Banner advertisement shown at the bottom of the public site"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "sponsorName": {
+      "type": "string"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "required": true
+    },
+    "linkUrl": {
+      "type": "string"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ethiopian Online Lottery Platform — Product &amp; Infrastructure Plan</title>
+<style>
+  :root {
+    --ink: #1d2420;
+    --muted: #5c6a62;
+    --accent: #0e6b4a;
+    --gold: #a87b1f;
+    --flag-red: #b3372f;
+    --rule: #d9ded9;
+    --tint: #f2f6f3;
+    --paper: #fdfdfc;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { background: #e9ece9; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--paper);
+    max-width: 51rem;
+    margin: 2rem auto 4rem;
+    padding: 3.5rem 3.75rem 4rem;
+    box-shadow: 0 1px 6px rgba(29, 36, 32, 0.14);
+  }
+
+  /* ---------- Header ---------- */
+  .eyebrow {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.9rem;
+  }
+
+  h1 {
+    font-family: Cambria, Georgia, serif;
+    font-size: 2.15rem;
+    font-weight: 700;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    font-size: 1.08rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 1.1rem;
+  }
+
+  .meta {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 1.4rem;
+  }
+  .meta strong { color: var(--ink); font-weight: 600; }
+
+  .tricolor {
+    height: 3px;
+    border: none;
+    background: linear-gradient(to right,
+      var(--accent) 0 46%,
+      var(--gold) 46% 73%,
+      var(--flag-red) 73% 100%);
+    margin-bottom: 2.4rem;
+  }
+
+  /* ---------- Print helper banner (screen only) ---------- */
+  .print-note {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 0.82rem;
+    color: var(--muted);
+    background: var(--tint);
+    border: 1px solid var(--rule);
+    padding: 0.6rem 0.9rem;
+    margin-bottom: 2.4rem;
+  }
+  .print-note kbd {
+    font-family: Consolas, monospace;
+    font-size: 0.78rem;
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 0 0.3em;
+  }
+
+  /* ---------- Sections ---------- */
+  section { margin-bottom: 2.6rem; }
+
+  h2 {
+    font-family: Cambria, Georgia, serif;
+    font-size: 1.42rem;
+    font-weight: 700;
+    line-height: 1.25;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 1rem;
+  }
+  h2 .num { color: var(--accent); font-variant-numeric: tabular-nums; margin-right: 0.35rem; }
+
+  h3 {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 1.4rem 0 0.5rem;
+  }
+
+  p { margin-bottom: 0.8rem; }
+  p:last-child { margin-bottom: 0; }
+
+  ul, ol { margin: 0 0 0.9rem 1.4rem; }
+  li { margin-bottom: 0.32rem; }
+  li ul { margin-top: 0.32rem; margin-bottom: 0.4rem; }
+
+  strong { font-weight: 700; }
+
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  a:hover { border-bottom-color: var(--accent); }
+
+  /* ---------- Tables ---------- */
+  .table-wrap { overflow-x: auto; margin-bottom: 1rem; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
+  th {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: left;
+    color: var(--muted);
+    background: var(--tint);
+    padding: 0.5rem 0.65rem;
+    border-bottom: 1.5px solid var(--accent);
+  }
+  td {
+    padding: 0.5rem 0.65rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tr.highlight td { background: var(--tint); font-weight: 600; }
+
+  .table-caption {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 0.76rem;
+    color: var(--muted);
+    font-style: italic;
+    margin: -0.4rem 0 1rem;
+  }
+
+  /* ---------- Callout ---------- */
+  .callout {
+    background: var(--tint);
+    border: 1px solid var(--rule);
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 1rem;
+  }
+  .callout .label {
+    display: block;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  /* ---------- Diagram ---------- */
+  pre {
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 0.72rem;
+    line-height: 1.45;
+    background: var(--tint);
+    border: 1px solid var(--rule);
+    padding: 1rem 1.2rem;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+  }
+
+  /* ---------- Footer ---------- */
+  .doc-footer {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .sources { font-size: 0.9rem; }
+  .sources li { margin-bottom: 0.25rem; }
+
+  /* ---------- Print ---------- */
+  @page { size: A4; margin: 16mm 15mm; }
+
+  @media print {
+    html { background: #fff; }
+    body {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+      box-shadow: none;
+      font-size: 10.3pt;
+      line-height: 1.5;
+    }
+    .print-note { display: none; }
+    h1 { font-size: 21pt; }
+    h2 { font-size: 13.5pt; break-after: avoid; }
+    h3 { break-after: avoid; }
+    section { margin-bottom: 1.6rem; }
+    table { font-size: 8.4pt; }
+    pre { font-size: 7.4pt; }
+    .table-wrap, table, .callout, pre { break-inside: avoid; }
+    tr, li { break-inside: avoid; }
+    a { color: var(--accent); border-bottom: none; }
+    .page-break { break-before: page; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Project Plan · Draft for Partner Discussion</p>
+  <h1>Ethiopian Online Lottery Platform</h1>
+  <p class="subtitle">Product &amp; infrastructure plan — multi-tenant lottery SaaS (web app + Telegram bot)</p>
+  <p class="meta"><strong>Model:</strong> B2B SaaS &nbsp;·&nbsp; <strong>Market:</strong> Ethiopia &nbsp;·&nbsp; <strong>Channels:</strong> Web + Telegram per client &nbsp;·&nbsp; <strong>Date:</strong> July 10, 2026 &nbsp;·&nbsp; Prices verified July 2026</p>
+  <hr class="tricolor">
+</header>
+
+<p class="print-note">To save this page as a PDF yourself: press <kbd>Ctrl</kbd>+<kbd>P</kbd> and choose “Save as PDF”. This banner won’t appear in the printout.</p>
+
+<!-- ================================================================ -->
+<section>
+  <h2><span class="num">1.</span>At a glance</h2>
+  <div class="table-wrap">
+  <table>
+    <tr><th style="width:34%">Question</th><th>Answer</th></tr>
+    <tr><td>What we’re building</td><td><strong>Lottery-as-a-Service:</strong> a multi-tenant platform where clients (lottery operators) run their own branded lottery — web app + Telegram bot — on our software</td></tr>
+    <tr><td>Business model</td><td>Subscription (monthly fee) + revenue share or per-ticket fee, billed to clients; player money never touches us</td></tr>
+    <tr><td>Recommended stack</td><td>Laravel + MySQL/PostgreSQL + Redis — one deployment, tenant-scoped from day one</td></tr>
+    <tr><td>Hosting (pay in birr)</td><td><strong>Yegara VPS 80G</strong> — 4,450 ETB/mo (4 vCPU, 8 GB RAM, 80 GB NVMe)</td></tr>
+    <tr><td>Hosting (if we can pay in EUR/USD)</td><td><strong>Hetzner Cloud CX32</strong> — ~€7/mo (~1,200 ETB) for the same specs, roughly ¼ the price</td></tr>
+    <tr><td>Infrastructure running cost</td><td>~5,000–7,500 ETB/month to start on the birr-only route; ~2,500–4,000 ETB/month via Hetzner</td></tr>
+  </table>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<section>
+  <h2><span class="num">2.</span>Channels (per tenant)</h2>
+  <p>Every client gets their own branded instance of each channel:</p>
+  <div class="table-wrap">
+  <table>
+    <tr><th style="width:30%">Channel</th><th>Role</th></tr>
+    <tr><td><strong>Web app</strong> (responsive, PWA)</td><td>Full experience: registration, wallet, play, results, account — on the client’s subdomain or custom domain</td></tr>
+    <tr><td><strong>Telegram bot</strong></td><td>Full play loop in chat: register, deposit, buy, get notified. In Ethiopia a large share of lottery/betting activity happens on Telegram — each client connects <strong>their own bot</strong></td></tr>
+    <tr><td><strong>Telegram Mini App</strong></td><td>The client’s web app opened inside Telegram via their bot — same codebase, near-zero extra cost, feels native to Telegram users</td></tr>
+    <tr><td><strong>Public Telegram channel</strong></td><td>Client marketing: auto-posted draw results, winner announcements, jackpot updates</td></tr>
+    <tr><td>Later (V2+)</td><td>Agent/retailer portal for cash sales, USSD (requires telecom agreement), native mobile apps</td></tr>
+  </table>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<section>
+  <h2><span class="num">3.</span>SaaS model: one platform, many lottery operators</h2>
+  <p>We are not building one lottery — we’re building the <strong>system that runs lotteries</strong> and selling it to operators. Three layers:</p>
+  <div class="table-wrap">
+  <table>
+    <tr><th style="width:22%">Layer</th><th style="width:30%">Who</th><th>What they do / get</th></tr>
+    <tr><td><strong>Platform</strong> (us)</td><td>We operate the software</td><td>Host, maintain, onboard and bill tenants; never touch player money</td></tr>
+    <tr><td><strong>Tenants</strong> (clients)</td><td>Lottery operators</td><td>Their own branded lottery: domain, Telegram bot, games, players, prize payouts</td></tr>
+    <tr><td><strong>Players</strong></td><td>Each tenant’s customers</td><td>Play on that tenant’s web app/bot; belong to exactly one tenant</td></tr>
+  </table>
+  </div>
+
+  <h3>3.1 &nbsp;Multi-tenancy architecture</h3>
+  <ul>
+    <li><strong>One codebase, one deployment, shared database with a <code>tenant_id</code> on every row</strong> (Laravel: <code>stancl/tenancy</code> or <code>spatie/laravel-multitenancy</code>). Simplest to operate on one VPS; scales to dozens of tenants</li>
+    <li><strong>Tenant resolution by domain:</strong> each client gets <code>client.ourplatform.com</code> (wildcard DNS + wildcard SSL); custom domains (<code>clientlottery.com</code>) supported via CNAME with automated Let’s Encrypt issuance</li>
+    <li><strong>Every query tenant-scoped</strong> through global scopes, enforced by automated tests — a cross-tenant data leak is the one unforgivable bug in a SaaS</li>
+    <li>Upgrade path: <strong>database-per-tenant</strong> for premium clients who demand hard isolation (same codebase supports both modes)</li>
+    <li><strong>Per-tenant Telegram bot:</strong> the client creates a bot with BotFather and pastes the token; the platform registers one webhook per bot and routes updates to the right tenant</li>
+    <li><strong>Per-tenant payment credentials:</strong> each client connects their <strong>own</strong> Chapa / SantimPay / ArifPay / Telebirr merchant account. Player deposits settle directly with the client — the platform never holds player funds (keeps us a pure technology provider)</li>
+    <li>Per-tenant branding (logo, colors, name, T&amp;C), SMS sender ID and quota, language defaults</li>
+    <li>Everything in the feature list (ledger, draw engine, fraud tools, reports) runs tenant-scoped automatically</li>
+  </ul>
+
+  <h3>3.2 &nbsp;Platform admin console (our side — sits above all tenant admins)</h3>
+  <ul>
+    <li><strong>Tenant lifecycle:</strong> onboarding wizard (brand → bot token → payment keys → first game), trial period, activate, suspend, offboard with full data export</li>
+    <li><strong>Subscription plans &amp; feature flags</strong> per plan: allowed game types, player caps, SMS quotas, custom domain, Mini App, API access</li>
+    <li><strong>Billing:</strong> monthly fee + revenue share (% of ticket sales) or per-ticket fee; usage metered automatically from the ledger; invoices in birr; overdue → warning → auto-suspend</li>
+    <li>Cross-tenant health dashboard: sales, error rates, queue depth, draw schedule per tenant</li>
+    <li>Support <strong>impersonation</strong> (“view as tenant admin”) — fully audit-logged</li>
+    <li>Platform-wide announcements to tenant admins</li>
+  </ul>
+
+  <h3>3.3 &nbsp;Consequences for the rest of this plan</h3>
+  <ul>
+    <li>The admin console in the feature list is the <strong>tenant admin console</strong>; the platform console sits above it</li>
+    <li><strong>Build tenant-aware from day one</strong>, even if we launch with a single anchor tenant (possibly our own lottery operation). Retrofitting <code>tenant_id</code> into a live single-tenant money system later is one of the most painful migrations there is</li>
+    <li>Each tenant carries their own operating license and prize liabilities — this belongs in the client contract; the platform contracts as a technology provider</li>
+  </ul>
+</section>
+
+<!-- ================================================================ -->
+<section class="page-break">
+  <h2><span class="num">4.</span>Feature list (comprehensive — everything below is per tenant)</h2>
+
+  <h3>4.1 &nbsp;Accounts &amp; identity</h3>
+  <ul>
+    <li>Registration with <strong>phone number + SMS OTP</strong> (phone-first; email optional)</li>
+    <li>Login: phone + password/PIN; OTP fallback; “login with Telegram” on web</li>
+    <li><strong>One account across web and bot</strong> — link Telegram to an existing account via OTP or deep-link code</li>
+    <li>Profile: name, language, notification preferences</li>
+    <li><strong>KYC tiers with limits:</strong>
+      <ul>
+        <li>Tier 0 (phone verified): small deposits/plays, no withdrawals</li>
+        <li>Tier 1 (ID verified — Fayda national ID, kebele ID, or passport photo upload + admin review): full limits, withdrawals enabled</li>
+      </ul>
+    </li>
+    <li>Age verification (18+) at KYC; date-of-birth check at registration</li>
+    <li>Transaction PIN and/or 2FA required for withdrawals</li>
+    <li>Device &amp; session management (view/revoke active sessions)</li>
+    <li><strong>Responsible gaming:</strong> self-set deposit limits, cool-off periods, self-exclusion, visible spend history</li>
+    <li>Account closure with data-retention rules</li>
+  </ul>
+
+  <h3>4.2 &nbsp;Wallet &amp; payments</h3>
+  <ul>
+    <li><strong>Double-entry ledger</strong> — every birr movement is an immutable journal entry; balances are derived, never edited directly. This is the audit backbone for disputes, reconciliation, and SaaS usage metering</li>
+    <li>Single wallet shared across web + bot; separate <strong>cash balance</strong> and <strong>bonus balance</strong> (with wagering rules before bonus converts to cash)</li>
+    <li><strong>Deposits:</strong>
+      <ul>
+        <li>Telebirr (direct via Ethio Telecom Fabric gateway, or via aggregator)</li>
+        <li>Chapa / ArifPay / SantimPay aggregator checkout → covers major banks, cards, CBE Birr, M-Pesa</li>
+        <li><strong>Manual bank transfer with receipt upload + admin approval</strong> (essential fallback — widely used in Ethiopia)</li>
+        <li>All using the <strong>tenant’s own merchant credentials</strong> — funds settle directly with the client</li>
+      </ul>
+    </li>
+    <li><strong>Withdrawals:</strong> to Telebirr or bank account; minimum/maximum amounts; fee schedule; <strong>admin review queue</strong> with maker-checker approval; automatic prize-tax withholding where applicable</li>
+    <li>Idempotent payment-webhook processing (a gateway retry must never double-credit)</li>
+    <li>Daily <strong>reconciliation screen</strong>: tenant ledger vs. gateway settlement reports, with mismatch flags</li>
+    <li>Full transaction history for users (deposits, plays, wins, withdrawals, bonuses)</li>
+    <li>Refund/void flows with audit trail</li>
+  </ul>
+
+  <h3>4.3 &nbsp;Games &amp; ticketing</h3>
+  <ul>
+    <li><strong>Game engine supporting multiple templates:</strong>
+      <ul>
+        <li><strong>Draw lottery</strong> — pick N of M numbers (e.g., 5/35), scheduled draws, prize tiers</li>
+        <li><strong>Raffle</strong> — fixed pool of numbered tickets, one or more winners drawn from sold tickets</li>
+        <li><strong>Instant win / scratch</strong> — predetermined prize pool, reveal on purchase</li>
+        <li>Daily / weekly / special-event draws</li>
+      </ul>
+    </li>
+    <li>Game configurator (tenant admin): ticket price, sales window &amp; cutoff, prize structure (<strong>fixed prizes</strong> or <strong>pari-mutuel</strong> % of pool), max tickets per user, rollover rules</li>
+    <li>Ticket purchase: manual number pick, <strong>quick pick</strong> (random), bulk buy, multi-draw subscription (“play my numbers for the next 4 draws”)</li>
+    <li>Ticket lifecycle: reserved → paid → active → won/lost → claimed/expired (with an unclaimed-prize policy)</li>
+    <li>Unique ticket serials + QR code; downloadable/printable receipt</li>
+    <li>“Check my ticket” by serial or QR scan</li>
+    <li>Jackpot rollover and guaranteed-minimum-prize support</li>
+    <li>Sold-ticket counter / prize-pool ticker on game pages (drives urgency, and pari-mutuel transparency)</li>
+  </ul>
+
+  <h3>4.4 &nbsp;Draw engine &amp; provable fairness</h3>
+  <p><em>Trust is the product — for players, for clients, and for auditors.</em></p>
+  <ul>
+    <li><strong>CSPRNG</strong> (cryptographically secure random number generator) for all draws — never <code>rand()</code></li>
+    <li><strong>Commit–reveal scheme:</strong> before sales close, publish the SHA-256 hash of a secret server seed; after the draw, publish the seed so anyone can verify the winning numbers were derived from it (seed + closed ticket-set hash → HMAC-based number derivation). A public “verify this draw” page recomputes it in the browser</li>
+    <li>Draw workflow with <strong>human approval gate:</strong> sales cutoff → ticket set frozen &amp; hashed → RNG executes → draw officer + second admin approve → results published everywhere simultaneously (web, bot, Telegram channel, SMS to winners)</li>
+    <li>Automatic winner computation across all prize tiers; documented tie-handling for raffles</li>
+    <li><strong>Tamper-evident audit log</strong> — hash-chained log of every draw event</li>
+    <li>Support for supervised/manual draws (e.g., a livestreamed physical draw for marketing) with dual-control result entry</li>
+  </ul>
+
+  <h3>4.5 &nbsp;Telegram bot (one per tenant)</h3>
+  <ul>
+    <li><code>/start</code> with <strong>deep-link payloads</strong> (referral codes, campaign tracking, account-link tokens)</li>
+    <li>Registration via Telegram’s <strong>share-phone-number</strong> button + OTP</li>
+    <li>Browse open games, buy tickets with inline keyboards (quick pick &amp; manual pick)</li>
+    <li>Wallet in chat: balance, deposit (aggregator checkout link or Telebirr flow), withdrawal request</li>
+    <li>My tickets, results lookup, transaction history</li>
+    <li><strong>Push notifications:</strong> draw reminders, results, personal win alerts (“🎉 You won 500 ETB”)</li>
+    <li><strong>Mini App button</strong> that opens the tenant’s web app inside Telegram</li>
+    <li>Referral link generator with reward tracking</li>
+    <li>Amharic/English (auto-detect from Telegram locale, user-switchable)</li>
+    <li>FAQ/support commands with handoff to a human support inbox</li>
+    <li>Tenant-admin <strong>broadcast tool</strong> with opt-out handling and rate limiting (Telegram allows ~30 msgs/sec per bot — queue broadcasts)</li>
+    <li>Auto-posting of results &amp; jackpot milestones to the tenant’s public channel</li>
+  </ul>
+
+  <h3>4.6 &nbsp;Notifications &amp; messaging</h3>
+  <ul>
+    <li>Channels: SMS (OTP, win alerts), Telegram push, in-app inbox, optional email</li>
+    <li>Local SMS gateway (e.g., AfroMessage or GeezSMS) — per-message cost metered against the tenant’s quota; Telegram push is free</li>
+    <li>Templated messages, multi-language, with a per-user channel-preference matrix</li>
+    <li>Event triggers: OTP, deposit confirmed, ticket purchased, draw reminder, results, win, withdrawal status, KYC status, promos (opt-in)</li>
+  </ul>
+
+  <h3>4.7 &nbsp;Growth &amp; marketing</h3>
+  <ul>
+    <li><strong>Referral program:</strong> unique codes/links (web + Telegram deep links), reward on referee’s first deposit/play, anti-abuse rules</li>
+    <li>Promo codes; first-deposit / first-play bonuses (using the bonus-balance rules in 4.2)</li>
+    <li>Loyalty points on spend, redeemable for tickets</li>
+    <li>CMS-managed banners, landing pages, winner stories (“social proof” page — with winner consent)</li>
+    <li>Campaign scheduler for SMS/Telegram blasts with segmentation (inactive 30 days, big players, etc.)</li>
+    <li>UTM/campaign attribution so the client knows which channel sells tickets</li>
+  </ul>
+
+  <h3>4.8 &nbsp;Tenant admin console &amp; operations</h3>
+  <ul>
+    <li><strong>Role-based access control:</strong> owner, finance, draw officer, support, KYC reviewer, auditor (read-only)</li>
+    <li><strong>Maker-checker (two-person) approval</strong> on all sensitive actions: draw execution, withdrawal batches, manual wallet adjustments, game config changes</li>
+    <li>Dashboard: sales today/this draw, gross gaming revenue, active users, <strong>outstanding prize liabilities</strong>, deposit/withdrawal volumes</li>
+    <li>Game &amp; draw management (create, schedule, pause, void with reason)</li>
+    <li>Player management: search, profile, activity, KYC review queue, suspend/ban with reason, notes</li>
+    <li>Finance: withdrawal approval queue, manual-deposit receipt review, reconciliation, adjustment journal (dual-control)</li>
+    <li><strong>Fraud tools:</strong> velocity limits, duplicate-account detection (device fingerprint, IP, ID number), watchlists, automatic holds on suspicious wins</li>
+    <li>Content management: FAQ, terms &amp; conditions (versioned, with user-acceptance tracking), banners</li>
+    <li>Immutable <strong>audit log viewer</strong> (who did what, when, from where) with CSV/Excel export</li>
+  </ul>
+
+  <h3>4.9 &nbsp;Reporting (per tenant)</h3>
+  <ul>
+    <li>Revenue and prize-payout reports per game / per period, exportable (CSV/Excel)</li>
+    <li>Winner tax-withholding report</li>
+    <li>Large-transaction flags, structuring detection, KYC-tier enforcement</li>
+    <li>Read-only auditor account and periodic report exports</li>
+    <li>Consent records, retention schedule, unclaimed-prize handling</li>
+  </ul>
+
+  <h3>4.10 &nbsp;Support &amp; content</h3>
+  <ul>
+    <li>Help center / FAQ (web + bot)</li>
+    <li>Support inbox: web contact form + Telegram messages land in one queue with player context attached</li>
+    <li>Prize-claim dispute flow with status tracking</li>
+    <li>Public pages: how it works, past results archive, draw verification, responsible gaming, T&amp;C, privacy policy — Amharic + English</li>
+  </ul>
+
+  <h3>4.11 &nbsp;Analytics</h3>
+  <ul>
+    <li>Funnel: visitor → registered → KYC → first deposit → first play → repeat</li>
+    <li>Retention cohorts, average revenue per user, game-level performance (sell-through %, margin)</li>
+    <li>Channel split: web vs. bot vs. Mini App</li>
+    <li>Draw-night load and conversion reporting</li>
+  </ul>
+
+  <h3>4.12 &nbsp;Security &amp; non-functional requirements</h3>
+  <ul>
+    <li>TLS everywhere; HSTS; passwords/PINs hashed with Argon2/bcrypt</li>
+    <li>KYC documents encrypted at rest, access-logged</li>
+    <li><strong>Rate limiting + CAPTCHA on OTP endpoints</strong> (SMS-pumping fraud is a real, expensive attack)</li>
+    <li>Idempotency keys and DB row-locking on all money operations (no double-spend under concurrent requests)</li>
+    <li><strong>Tenant isolation tests in CI</strong> — automated proof that no query crosses tenants</li>
+    <li>Cloudflare in front: DDoS protection, WAF, caching, hides origin IP; wildcard DNS for tenant subdomains</li>
+    <li>Daily <strong>off-server encrypted backups</strong>, restorable per tenant (the wallet ledgers are the business; losing them is unrecoverable)</li>
+    <li>Monitoring: uptime checks (UptimeRobot), error tracking (Sentry), disk/CPU alerts</li>
+    <li>Load target: comfortable when multiple tenants hit draw-night spikes simultaneously; queue-based processing absorbs bursts</li>
+    <li>Amharic (Ge’ez script) rendering and lightweight pages for low-bandwidth mobile users</li>
+    <li>Staging environment; penetration test before real-money launch</li>
+  </ul>
+</section>
+
+<!-- ================================================================ -->
+<section class="page-break">
+  <h2><span class="num">5.</span>Phased rollout</h2>
+  <div class="table-wrap">
+  <table>
+    <tr><th style="width:16%">Phase</th><th>Scope</th><th style="width:24%">Cut line</th></tr>
+    <tr>
+      <td><strong>MVP (launch)</strong></td>
+      <td><strong>Multi-tenant schema from day one, operated with a single anchor tenant</strong> (manually provisioned — possibly our own lottery operation or a committed first client). One game type (raffle <strong>or</strong> simple draw lottery), phone+OTP accounts, KYC tiers, wallet with <strong>one aggregator</strong> + manual deposit fallback, commit-reveal draw engine with approval gate, per-tenant Telegram bot, tenant admin console with RBAC + maker-checker, revenue &amp; tax reports, referral codes, Amharic+English</td>
+      <td>Everything needed to run one honest, auditable lottery end-to-end on tenant-scoped foundations</td>
+    </tr>
+    <tr>
+      <td><strong>V1.5</strong></td>
+      <td><strong>Platform console: tenant onboarding wizard, subscription plans, billing &amp; usage metering, feature flags.</strong> Second game type (instant win), Telebirr direct integration, Mini App polish, loyalty points, campaign broadcasts, richer analytics</td>
+      <td>Sell to the second, third, fourth client without engineering work per client</td>
+    </tr>
+    <tr>
+      <td><strong>V2</strong></td>
+      <td>Custom-domain automation, database-per-tenant premium isolation, agent/retailer portal, USSD, native apps, live-draw streaming, advanced fraud scoring, public API for tenants</td>
+      <td>Scale &amp; differentiation</td>
+    </tr>
+  </table>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<section>
+  <h2><span class="num">6.</span>Recommended architecture &amp; stack</h2>
+
+  <div class="callout">
+    <span class="label">Core principle</span>
+    <strong>One backend, one database, one ledger — tenant-scoped everywhere.</strong> Web, bot, and Mini App are three doors into the same system; tenants are rows, not deployments.
+  </div>
+
+<pre>
+         Cloudflare (free) — DDoS/WAF/CDN/SSL, wildcard *.ourplatform.com
+                                   │
+                            Nginx on the VPS
+                                   │
+                Tenancy resolver (domain / bot token → tenant context)
+                                   │
+              ┌────────────────────┼────────────────────┐
+        Tenant web apps        REST/API for         Telegram webhooks
+        (PWA + Mini App,       web &amp; Mini App       (one per tenant bot)
+         white-labeled)
+              └────────────────────┼────────────────────┘
+                 Application (Laravel + stancl/tenancy)
+                     ┌─────────┼──────────┬──────────────┐
+                  MySQL/     Redis      Queue workers   Scheduler (cron)
+                  Postgres  (cache,     (payments, SMS,  (draw cutoffs,
+                  (tenant-   sessions,   broadcasts,      draw execution,
+                   scoped    locks)      notifications)   billing metering,
+                   ledger)                                reconciliation)
+</pre>
+
+  <p><strong>Recommended: Laravel 12 + MySQL or PostgreSQL + Redis</strong></p>
+  <ul>
+    <li><strong><code>stancl/tenancy</code></strong> (tenancyforlaravel.com) for multi-tenancy — supports shared-DB now, DB-per-tenant later, and per-tenant domains</li>
+    <li>Filament for both consoles: platform admin and tenant admin (RBAC, tables, approvals — very fast to build)</li>
+    <li>Laravel Horizon for queues; scheduler for draw automation and billing metering</li>
+    <li>Telegram bots via webhook in the same app (Nutgram or Telegraph package), one webhook route per tenant bot</li>
+    <li>Frontend: Livewire or Inertia+Vue with per-tenant theming; the same responsive app registers as each tenant’s Telegram Mini App</li>
+    <li>Why: largest hire-able developer pool in Ethiopia, batteries included, one deployable unit on one VPS</li>
+  </ul>
+  <p><strong>Solid alternative:</strong> Node.js — NestJS + grammY + Prisma + PostgreSQL, Next.js frontend. Choose this only if the developers we already have are stronger in TypeScript.</p>
+</section>
+
+<!-- ================================================================ -->
+<section>
+  <h2><span class="num">7.</span>Hosting: Yegara vs. the alternatives</h2>
+
+  <h3>The constraint that decides everything: how we pay</h3>
+  <p>International providers require a Visa/Mastercard that works online in EUR/USD. From Ethiopia that means a <strong>multi-currency prepaid card</strong> (e.g., Dashen Mastercard, and similar from CBE/Zemen — loaded at forex bureaus under NBE rules). If we can get and reliably reload one, international hosting is far cheaper. If not, we pay in birr locally.</p>
+
+  <h3>The candidates (like-for-like ≈ 4 vCPU / 8 GB RAM)</h3>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Provider</th><th>Plan</th><th>Specs</th><th class="num">Price/mo</th><th>Pay in</th><th>Notes</th></tr>
+    <tr class="highlight">
+      <td>Yegara (ET)</td><td>VPS 80G</td><td>4 vCPU, 8 GB, 80 GB NVMe, 20 TB</td><td class="num">4,450 ETB</td><td>Birr</td><td>Unmanaged; local support; best local value</td>
+    </tr>
+    <tr>
+      <td>Yegara (ET)</td><td>VPS 40G</td><td>2 vCPU, 4 GB, 40 GB NVMe, 20 TB</td><td class="num">2,950 ETB</td><td>Birr</td><td>Viable MVP start / staging box</td>
+    </tr>
+    <tr>
+      <td>Zergaw (ET)</td><td>CS04008</td><td>4 vCPU, 8 GB, 80 GB</td><td class="num">10,458 ETB</td><td>Birr</td><td>In-country DC, weekly backups — but <strong>2 Mbps uplink</strong> standard, a serious bottleneck on draw nights</td>
+    </tr>
+    <tr>
+      <td>Ethio Telecom Telecloud (ET)</td><td>quote-based</td><td>varies</td><td class="num">varies</td><td>Birr</td><td>In-country, enterprise-oriented; worth a quote if in-country hosting is required</td>
+    </tr>
+    <tr>
+      <td>WebSprix (ET)</td><td>varies</td><td>varies</td><td class="num">varies</td><td>Birr</td><td>ISP with cloud/VPS offering; get a quote</td>
+    </tr>
+    <tr class="highlight">
+      <td>Hetzner (DE/FI)</td><td>CX32</td><td>4 vCPU, 8 GB, 80 GB NVMe, 20 TB</td><td class="num">~€7 (~1,200 ETB)</td><td>Card (EUR)</td><td>Best price/performance anywhere; superb reliability; ~130–180 ms from Ethiopia</td>
+    </tr>
+    <tr>
+      <td>Contabo (DE)</td><td>Cloud VPS</td><td>4 vCPU, 8 GB, 100–200 GB</td><td class="num">~$7</td><td>Card</td><td>Cheapest, but oversold nodes → inconsistent performance; weaker support</td>
+    </tr>
+    <tr>
+      <td>DigitalOcean</td><td>Basic 8 GB</td><td>4 vCPU, 8 GB, 160 GB</td><td class="num">$48</td><td>Card</td><td>Polished ecosystem, poor value here; no African region</td>
+    </tr>
+  </table>
+  </div>
+  <p class="table-caption">Prices checked July 2026 — verify before purchase.</p>
+
+  <h3>What actually matters for this app</h3>
+  <ul>
+    <li><strong>Latency:</strong> local hosting gives Ethiopian users ~10–40 ms vs. ~150 ms from Europe. Noticeable but fine for a lottery site behind Cloudflare caching. Telegram bot traffic routes through Telegram’s European servers anyway — EU hosting is, if anything, <em>better</em> for bot responsiveness.</li>
+    <li><strong>Payment webhooks</strong> from Telebirr/Chapa reach either location without issue.</li>
+    <li><strong>Data residency:</strong> confirm whether player data must be hosted in Ethiopia before committing — only the Ethiopian providers qualify if so.</li>
+    <li><strong>SaaS scaling:</strong> tenants share the same box; each active tenant adds modest load. Plan to step up tiers as tenants sign — Hetzner’s 5-minute resize/snapshots make this much easier than local providers’ manual upgrades.</li>
+    <li><strong>Reliability:</strong> Hetzner’s track record beats any local option; among locals, Yegara’s VPS line (NVMe, 20 TB transfer) is markedly better value than Zergaw’s pricing and 2 Mbps uplink.</li>
+  </ul>
+
+  <h3>Recommendation</h3>
+  <ol>
+    <li><strong>If offshore hosting is allowed and we can get a multi-currency card → Hetzner CX32</strong> (~1,200 ETB/mo). Same specs as Yegara 80G at ¼ the price, plus snapshots and a proper cloud firewall. Keep the domain purchase at Yegara (pay in birr) or Namecheap.</li>
+    <li><strong>If we must pay in birr or host in Ethiopia → Yegara VPS 80G</strong> (4,450 ETB/mo). Best local value by a wide margin.</li>
+    <li><strong>Either way:</strong> Cloudflare free tier in front with wildcard DNS for tenant subdomains; a small second box (Yegara 40G or Hetzner CX22 ~€4) as staging + off-site backup target.</li>
+    <li><strong>Avoid shared hosting</strong> for the app itself: no queue workers, no Redis, no root hardening, no wildcard subdomain control, shared IP — wrong tool for a real-money multi-tenant platform. (A cheap Yegara shared plan is fine for a marketing/landing site + email if wanted.)</li>
+  </ol>
+</section>
+
+<!-- ================================================================ -->
+<section>
+  <h2><span class="num">8.</span>Supporting services</h2>
+  <div class="table-wrap">
+  <table>
+    <tr><th style="width:28%">Service</th><th>Choice</th><th style="width:28%">Cost</th></tr>
+    <tr><td>DNS / DDoS / WAF / CDN</td><td>Cloudflare free tier (wildcard <code>*.ourplatform.com</code> supported)</td><td>0</td></tr>
+    <tr><td>SSL</td><td>Let’s Encrypt (auto-renew; wildcard via DNS challenge + per-custom-domain issuance)</td><td>0</td></tr>
+    <tr><td>SMS gateway</td><td>AfroMessage / GeezSMS</td><td>per message (~0.3–0.6 ETB), metered per tenant — use Telegram push wherever possible</td></tr>
+    <tr><td>Payment aggregator</td><td>Each tenant connects their own Chapa / SantimPay / ArifPay / Telebirr merchant account</td><td>tenant pays ~2–3% per transaction to their gateway (confirm gateways will onboard lotteries)</td></tr>
+    <tr><td>Error tracking</td><td>Sentry free tier</td><td>0</td></tr>
+    <tr><td>Uptime monitoring</td><td>UptimeRobot free</td><td>0</td></tr>
+    <tr><td>Backups</td><td>Nightly encrypted DB dump → second VPS/off-site (or Backblaze B2 if paying by card, ~$6/TB); per-tenant restore tested</td><td>~0–1,000 ETB</td></tr>
+    <tr><td>OS &amp; stack</td><td>Ubuntu LTS, Nginx, firewall (80/443/SSH only), fail2ban, SSH keys only</td><td>0</td></tr>
+  </table>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<section>
+  <h2><span class="num">9.</span>Cost summary</h2>
+
+  <p><strong>One-time (technical):</strong> development (in-house partner effort or contracted) and a pre-launch penetration test. Company setup, client contracts, and licensing costs are tracked separately — each tenant carries their own operating license and prize funding.</p>
+
+  <p><strong>Monthly infrastructure (platform side):</strong></p>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Item</th><th class="num">Birr-only route</th><th class="num">International-card route</th></tr>
+    <tr><td>Production server</td><td class="num">Yegara 80G — 4,450 ETB</td><td class="num">Hetzner CX32 — ~1,200 ETB</td></tr>
+    <tr><td>Staging/backup box</td><td class="num">Yegara 40G — 2,950 ETB (optional at start)</td><td class="num">Hetzner CX22 — ~650 ETB</td></tr>
+    <tr><td>Domain (.com or .com.et)</td><td class="num">~150–250 ETB/mo amortized</td><td class="num">same</td></tr>
+    <tr><td>SMS budget</td><td class="num">usage-based, metered per tenant</td><td class="num">same</td></tr>
+    <tr class="highlight"><td><strong>Total infrastructure</strong></td><td class="num"><strong>~5,000–7,500 ETB/mo</strong></td><td class="num"><strong>~2,500–4,000 ETB/mo</strong></td></tr>
+  </table>
+  </div>
+  <p>Tenant-variable costs (SMS beyond quota, payment-gateway fees) pass through to each client’s own accounts. Platform infrastructure steps up roughly per handful of active tenants — and each new tenant should more than cover it in subscription revenue.</p>
+</section>
+
+<!-- ================================================================ -->
+<section>
+  <h2><span class="num">10.</span>Decisions to make together</h2>
+  <ol>
+    <li><strong>Anchor tenant</strong> — launch with our own lottery operation as the first tenant, or a committed first client?</li>
+    <li><strong>SaaS pricing model</strong> — setup fee + monthly subscription + revenue share (% of ticket sales) vs. per-ticket fee; trial policy; what the plan tiers gate (game types, player caps, SMS quota, custom domain)</li>
+    <li><strong>Target clients</strong> — existing betting shops adding lottery, new lottery entrants, corporate/NGO promotional raffles (a lighter niche worth exploring)</li>
+    <li><strong>First game type</strong> — raffle (simplest to explain and audit) vs. pick-N draw lottery (rollover jackpots)? Fixed prizes vs. percentage-of-pool?</li>
+    <li><strong>Hosting route</strong> — can we obtain a multi-currency prepaid card (→ Hetzner), or birr-only (→ Yegara 80G)?</li>
+    <li><strong>Payment partners to support first</strong> — Chapa vs. SantimPay vs. ArifPay? (Ask each about onboarding lotteries + settlement timelines)</li>
+    <li><strong>Stack &amp; team</strong> — Laravel (recommended for local hiring) vs. Node.js; who builds, and who runs platform operations (tenant onboarding, billing, support)</li>
+    <li><strong>Platform brand &amp; domain</strong> — each client brings their own brand; secure the platform name and matching Telegram handles early</li>
+  </ol>
+</section>
+
+<!-- ================================================================ -->
+<section>
+  <h2>Sources</h2>
+  <ul class="sources">
+    <li>Yegara plans &amp; pricing: <a href="https://www.whtop.com/review/yegara.com">whtop listing</a>, <a href="https://yegara.com/vps">yegara.com/vps</a>, <a href="https://yegara.com/price">yegara.com/price</a></li>
+    <li>Zergaw Cloud pricing: <a href="https://zergaw.com/cloud-server/">zergaw.com/cloud-server</a> · Ethio Telecom Telecloud: <a href="https://telecloud.ethiotelecom.et/">telecloud.ethiotelecom.et</a></li>
+    <li>Hetzner Cloud: <a href="https://www.hetzner.com/cloud">hetzner.com/cloud</a> · Contabo: <a href="https://contabo.com/en-us/pricing/">contabo.com/pricing</a> · comparisons: <a href="https://www.vpsbenchmarks.com/compare/contabo_vs_hetzner">VPSBenchmarks</a>, <a href="https://getdeploying.com/digitalocean-vs-hetzner">getdeploying</a></li>
+    <li>Payments: <a href="https://nbe.gov.et/payment-instrument-issuers-system-operators/">NBE licensed operators</a>, <a href="https://chapa.co/">Chapa</a>, <a href="https://santimpay.com/">SantimPay</a>, <a href="https://developer.ethiotelecom.et">Telebirr developer portal</a>, <a href="https://github.com/Solomonkassa/Nodejs-Telebirr-Integration">Telebirr Node.js integration example</a></li>
+    <li>International card issuance in Ethiopia: <a href="https://dashenbanksc.com/dashen-mastercard-multi-currency-international-prepaid-card/">Dashen multi-currency Mastercard</a>, <a href="https://addisfortune.news/banks-start-issuing-international-debit-cards-to-travelers">Addis Fortune on international debit cards</a></li>
+    <li>Multi-tenancy: <a href="https://tenancyforlaravel.com/">Tenancy for Laravel</a> · Lottery software feature references: <a href="https://www.gammastack.com/blog/online-lottery-management-software-features/">GammaStack</a>, <a href="https://innosoft-group.com/how-lottery-management-software-work/">Innosoft</a></li>
+  </ul>
+</section>
+
+<footer class="doc-footer">
+  Prices in this document are from public sources as of July 2026 and must be re-verified with banks and providers before commitments are made.
+</footer>
+
+</body>
+</html>

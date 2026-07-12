@@ -1,0 +1,62 @@
+{
+  "kind": "collectionType",
+  "collectionName": "lotteries",
+  "info": {
+    "singularName": "lottery",
+    "pluralName": "lotteries",
+    "displayName": "Lottery",
+    "description": "A lottery campaign for one company, with up to 5 draws"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "company": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "lotteryStatus": {
+      "type": "enumeration",
+      "enum": ["draft", "open", "closed", "completed"],
+      "default": "draft",
+      "required": true
+    },
+    "ticketPrice": {
+      "type": "decimal"
+    },
+    "ticketDigits": {
+      "type": "integer",
+      "default": 6,
+      "min": 4,
+      "max": 10,
+      "required": true
+    },
+    "allowMultipleWins": {
+      "type": "boolean",
+      "default": false
+    },
+    "paymentInstructions": {
+      "type": "text"
+    },
+    "draws": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::draw.draw",
+      "mappedBy": "lottery"
+    },
+    "tickets": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::ticket.ticket",
+      "mappedBy": "lottery",
+      "private": true
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tickets",
+  "info": {
+    "singularName": "ticket",
+    "pluralName": "tickets",
+    "displayName": "Ticket",
+    "description": "One entry. Eligible for every draw of its lottery once active."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "firstName": {
+      "type": "string",
+      "required": true,
+      "private": true
+    },
+    "fatherName": {
+      "type": "string",
+      "required": true,
+      "private": true
+    },
+    "phone": {
+      "type": "string",
+      "required": true,
+      "private": true
+    },
+    "paymentRef": {
+      "type": "string",
+      "required": true,
+      "private": true
+    },
+    "receiptScreenshot": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "private": true
+    },
+    "ticketStatus": {
+      "type": "enumeration",
+      "enum": ["pending", "active", "rejected"],
+      "default": "pending",
+      "required": true
+    },
+    "ticketNumber": {
+      "type": "string",
+      "unique": true
+    },
+    "source": {
+      "type": "enumeration",
+      "enum": ["web", "admin"],
+      "default": "web"
+    },
+    "notes": {
+      "type": "text",
+      "private": true
+    },
+    "approvedAt": {
+      "type": "datetime"
+    },
+    "lottery": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::lottery.lottery",
+      "inversedBy": "tickets"
+    },
+    "wonDraws": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::draw.draw",
+      "mappedBy": "winningTicket"
+    }
+  }
+}

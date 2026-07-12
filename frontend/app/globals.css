@@ -1,0 +1,274 @@
+@import "tailwindcss";
+
+/* ---------- Self-hosted fonts (see /public/fonts) ---------- */
+@font-face {
+  font-family: "Fraunces";
+  src: url("/fonts/Fraunces-500-normal.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Fraunces";
+  src: url("/fonts/Fraunces-600-normal.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Fraunces";
+  src: url("/fonts/Fraunces-500-italic.woff2") format("woff2");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("/fonts/SchibstedGrotesk-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("/fonts/SchibstedGrotesk-500-normal.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("/fonts/SchibstedGrotesk-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- Design tokens ---------- */
+@theme {
+  --color-pine-950: #071b14;
+  --color-pine-900: #0b2b1f;
+  --color-pine-800: #113828;
+  --color-pine-700: #1a4a36;
+  --color-pine-600: #23604a;
+
+  --color-paper-50: #faf6ec;
+  --color-paper-100: #f3eddd;
+  --color-paper-200: #e8dfc8;
+  --color-paper-300: #d8cdae;
+
+  --color-ink-900: #15211b;
+  --color-ink-600: #46554c;
+  --color-ink-400: #75847a;
+
+  --color-gold-200: #f3e2b3;
+  --color-gold-300: #eacb7c;
+  --color-gold-400: #dfb552;
+  --color-gold-500: #d2a032;
+  --color-gold-600: #b3861f;
+  --color-gold-700: #8f6a17;
+
+  --color-clay-600: #b94a32;
+
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-sans: "Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
+}
+
+/* ---------- Base ---------- */
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-family: var(--font-sans);
+  background: var(--color-paper-50);
+  color: var(--color-ink-900);
+}
+::selection {
+  background: var(--color-gold-400);
+  color: var(--color-pine-950);
+}
+
+/* The site commits to its own warm, light look in every OS theme. */
+
+/* ---------- Motion ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .d1 { animation-delay: 0.08s; }
+  .d2 { animation-delay: 0.18s; }
+  .d3 { animation-delay: 0.28s; }
+  .d4 { animation-delay: 0.4s; }
+  .d5 { animation-delay: 0.55s; }
+
+  /* Hidden initial state only — GSAP ScrollTrigger animates it in.
+     .in is the non-GSAP fallback (reduced motion adds it via JS). */
+  .reveal {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+
+  .card-lift {
+    transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.35s ease;
+  }
+  .card-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 48px -20px rgba(7, 27, 20, 0.35);
+  }
+
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.45) 50%, transparent 60%);
+    transform: translateX(-120%);
+    transition: transform 0.7s ease;
+  }
+  .btn-shine:hover::after {
+    transform: translateX(120%);
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; }
+}
+
+/* ---------- Craft details ---------- */
+
+/* Film-grain overlay for deep green sections */
+.grain {
+  position: relative;
+  isolation: isolate;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.grain > *:not(.absolute) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Perforated ticket edge — set --notch to the surrounding background */
+.perf {
+  position: relative;
+  border-top: 2px dashed var(--color-paper-300);
+}
+.perf::before,
+.perf::after {
+  content: "";
+  position: absolute;
+  top: -11px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--notch, var(--color-paper-100));
+}
+.perf::before {
+  left: -13px;
+}
+.perf::after {
+  right: -13px;
+}
+
+/* Hairline in Ethiopian tricolor, used once in the footer */
+.tricolor {
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    var(--color-pine-600) 0 46%,
+    var(--color-gold-500) 46% 73%,
+    var(--color-clay-600) 73% 100%
+  );
+}
+
+.digits {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Slow gold sheen sweeping across display text (hero emphasis). */
+.shimmer-text {
+  background: linear-gradient(
+    110deg,
+    var(--color-gold-300) 38%,
+    #fff8e0 50%,
+    var(--color-gold-300) 62%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .shimmer-text {
+    animation: shimmer 5.5s ease-in-out infinite;
+  }
+}
+@keyframes shimmer {
+  0% {
+    background-position: 130% 0;
+  }
+  100% {
+    background-position: -90% 0;
+  }
+}
+
+/* Winners ticker marquee */
+.ticker {
+  overflow: hidden;
+}
+.ticker-track {
+  display: flex;
+  width: max-content;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ticker-track {
+    animation: ticker 40s linear infinite;
+  }
+  .ticker:hover .ticker-track {
+    animation-play-state: paused;
+  }
+}
+@keyframes ticker {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* FAQ marker */
+details.faq summary::-webkit-details-marker {
+  display: none;
+}
+details.faq summary::after {
+  content: "+";
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--color-gold-600);
+  transition: transform 0.3s ease;
+}
+details.faq[open] summary::after {
+  transform: rotate(45deg);
+}
