@@ -1,3 +1,6 @@
+# Static homepage first: serve index.html for "/" before Laravel's index.php.
+DirectoryIndex index.html index.php
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
