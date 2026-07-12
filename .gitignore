@@ -43,8 +43,11 @@ storage/pail/
 bootstrap/cache/*.php
 .phpunit.result.cache
 
+# --- Strapi user uploads (public disk on the legacy variant) ---------------
+backend/public/uploads/*
+!backend/public/uploads/.gitkeep
+
 # --- Logs / OS noise -------------------------------------------------------
-npm-debug.log*
-yarn-error.log
+*.log
 Thumbs.db
 .DS_Store
