@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3">
         <div>
           <p className="font-display text-3xl font-semibold text-paper-50">
-            Edil <span className="text-lg font-medium text-gold-400">እድል</span>
+            HahuPlay <span className="text-lg font-medium text-gold-400">ሀሁ</span>
           </p>
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-paper-100/70">
             The grand prize draw. One ticket enters every draw — verified
@@ -31,7 +31,7 @@ export default function Footer() {
             Contact
           </p>
           <ul className="space-y-2 text-paper-100/80">
-            <li>Telegram: @edildraws (demo)</li>
+            <li>Telegram: @hahuplay (demo)</li>
             <li>Phone: 09 12 34 56 78 (demo)</li>
             <li>Addis Ababa, Ethiopia</li>
           </ul>
@@ -40,7 +40,7 @@ export default function Footer() {
 
       <div className="tricolor" />
       <div className="bg-pine-950 py-5 text-center text-xs text-paper-100/50">
-        © 2026 Edil (demo build) · Players must be 18 or older · Play
+        © 2026 HahuPlay · Players must be 18 or older · Play
         responsibly — set limits, and never play with money you need.
         <span className="mx-2">·</span>
         <Link href="/terms" className="underline hover:text-paper-50">Terms</Link>

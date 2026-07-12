@@ -3,21 +3,21 @@ import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:8000';
-const TITLE = 'Edil — The Grand Prize Draw';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://hahuplay.com';
+const TITLE = 'HahuPlay — The Grand Prize Draw';
 const DESCRIPTION =
   'One ticket enters every draw — the house, the car, the phone. Verified payments, provable draws, published winners. 18+ only.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { default: TITLE, template: '%s · Edil' },
+  title: { default: TITLE, template: '%s · HahuPlay' },
   description: DESCRIPTION,
-  keywords: ['lottery', 'raffle', 'Ethiopia', 'Addis Ababa', 'prize draw', 'እድል', 'Edil'],
+  keywords: ['lottery', 'raffle', 'Ethiopia', 'Addis Ababa', 'prize draw', 'ሀሁ', 'HahuPlay'],
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,
     type: 'website',
-    siteName: 'Edil',
+    siteName: 'HahuPlay',
     locale: 'en_US',
     images: [{ url: '/photo_1_2026-07-11_23-07-32.jpg', width: 1280, height: 960, alt: 'The grand prize house' }],
   },

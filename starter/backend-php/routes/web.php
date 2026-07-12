@@ -27,7 +27,7 @@ Route::get('/admin/receipts/{ticket}', function (Ticket $ticket) {
 
 /** Full ticket export for record-keeping / NLA reporting. Admins only. */
 Route::get('/admin/tickets/export', function () {
-    $filename = 'edil-tickets-' . now()->format('Y-m-d-Hi') . '.csv';
+    $filename = 'hahuplay-tickets-' . now()->format('Y-m-d-Hi') . '.csv';
 
     return response()->streamDownload(function () {
         $out = fopen('php://output', 'w');

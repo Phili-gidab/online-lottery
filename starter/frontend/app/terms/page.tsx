@@ -3,14 +3,14 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Terms & Conditions',
-  description: 'The rules of Edil prize draws: eligibility, entries, draws, prizes, and claims.',
+  description: 'The rules of HahuPlay prize draws: eligibility, entries, draws, prizes, and claims.',
 };
 
 const SECTIONS: { title: string; body: string[] }[] = [
   {
     title: '1. The promoter',
     body: [
-      'Edil prize draws are operated by the company named on each campaign page (the “Promoter”). Questions about a campaign, a ticket, or a prize should go to the contact details in the footer.',
+      'HahuPlay prize draws are operated by the company named on each campaign page (the “Promoter”). Questions about a campaign, a ticket, or a prize should go to the contact details in the footer.',
     ],
   },
   {

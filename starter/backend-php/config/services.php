@@ -44,7 +44,7 @@ return [
         'driver' => env('SMS_DRIVER', 'log'),
         'token' => env('SMS_TOKEN'),
         'identifier' => env('SMS_IDENTIFIER'),
-        'sender' => env('SMS_SENDER', 'Edil'),
+        'sender' => env('SMS_SENDER', 'HahuPlay'),
     ],
 
 ];

@@ -8,9 +8,9 @@ export default function Header() {
         <Link href="/" className="group flex items-baseline gap-2">
           <span className="inline-block h-2.5 w-2.5 translate-y-[-1px] rounded-full bg-gold-500 transition group-hover:scale-125" />
           <span className="font-display text-2xl font-semibold tracking-tight text-pine-900">
-            Edil
+            HahuPlay
           </span>
-          <span className="text-sm font-medium text-gold-600">እድል</span>
+          <span className="text-sm font-medium text-gold-600">ሀሁ</span>
         </Link>
 
         <nav className="hidden items-center gap-7 text-sm font-medium text-ink-600 md:flex">

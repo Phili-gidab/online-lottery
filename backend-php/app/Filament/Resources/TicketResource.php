@@ -123,7 +123,7 @@ class TicketResource extends Resource
                         $r->save();
                         $sent = Sms::send(
                             $r->phone,
-                            "Edil: payment verified! Your ticket number is {$r->ticket_number}. "
+                            "HahuPlay: payment verified! Your ticket number is {$r->ticket_number}. "
                             . 'It enters every draw of ' . ($r->lottery?->title ?? 'the lottery') . '. Good luck!'
                         );
                         Notification::make()

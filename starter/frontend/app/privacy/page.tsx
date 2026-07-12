@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'What personal data Edil collects, why, and how it is protected.',
+  description: 'What personal data HahuPlay collects, why, and how it is protected.',
 };
 
 const SECTIONS: { title: string; body: string[] }[] = [

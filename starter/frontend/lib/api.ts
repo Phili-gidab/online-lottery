@@ -183,8 +183,8 @@ export interface EntryStatus {
   wins: { drawNumber: number; prizeName: string }[];
 }
 
-const ENTRIES_KEY = 'edil.entries';
-export const ENTRIES_EVENT = 'edil:entries-changed';
+const ENTRIES_KEY = 'hahu.entries';
+export const ENTRIES_EVENT = 'hahu:entries-changed';
 
 export function getSavedEntries(): SavedEntry[] {
   if (typeof window === 'undefined') return [];
