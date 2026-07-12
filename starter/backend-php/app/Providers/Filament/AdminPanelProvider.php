@@ -25,6 +25,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->profile()
             ->brandName('HahuPlay Admin')
             ->colors([
                 'primary' => Color::hex('#b3861f'),

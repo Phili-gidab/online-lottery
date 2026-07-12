@@ -3,6 +3,9 @@ node_modules/
 vendor/
 /tools/
 
+# --- Deployment bundles (contain the production APP_KEY) -------------------
+/deploy-package/
+
 # --- Environment & local data (never commit secrets or player PII) -------
 .env
 .env.*
