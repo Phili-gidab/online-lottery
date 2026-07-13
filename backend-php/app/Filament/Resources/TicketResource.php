@@ -140,10 +140,15 @@ class TicketResource extends Resource
                         Forms\Components\Textarea::make('reason')->label('Reason')->required(),
                     ])
                     ->action(function (Ticket $r, array $data) {
+                        $hadNumber = filled($r->ticket_number);
                         $r->ticket_status = 'rejected';
+                        $r->ticket_number = null; // release a claimed lucky number
                         $r->notes = trim(($r->notes ? $r->notes . "\n" : '') . 'Rejected: ' . $data['reason']);
                         $r->save();
-                        Notification::make()->title('Ticket rejected')->danger()->send();
+                        Notification::make()
+                            ->title('Ticket rejected')
+                            ->body($hadNumber ? 'Its chosen number was released back to the pool.' : null)
+                            ->danger()->send();
                     }),
                 Tables\Actions\EditAction::make(),
             ]);

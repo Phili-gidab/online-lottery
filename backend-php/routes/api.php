@@ -22,3 +22,4 @@ Route::get('/ads', function () {
 Route::post('/tickets', [TicketController::class, 'store'])->middleware('throttle:5,1');
 Route::post('/tickets/check', [TicketController::class, 'check'])->middleware('throttle:12,1');
 Route::post('/tickets/status', [TicketController::class, 'status'])->middleware('throttle:12,1');
+Route::post('/tickets/availability', [TicketController::class, 'availability'])->middleware('throttle:30,1');

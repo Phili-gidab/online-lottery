@@ -118,6 +118,31 @@ export async function getAds(): Promise<Ad[]> {
   }
 }
 
+export interface NumberAvailability {
+  available: boolean;
+  digits: number;
+  suggestions: string[];
+}
+
+/** Live check for the "choose your lucky number" field. */
+export async function checkNumberAvailability(
+  lotteryDocumentId: string,
+  number: string
+): Promise<NumberAvailability | null> {
+  try {
+    const res = await fetch(`${API_URL}/api/tickets/availability`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ lottery: Number(lotteryDocumentId), number }),
+    });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json.data ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export const ORDINALS = ['First', 'Second', 'Third', 'Fourth', 'Fifth'];
 
 export const CATEGORY_META: Record<string, { icon: string; label: string }> = {

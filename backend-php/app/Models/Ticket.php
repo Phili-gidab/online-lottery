@@ -48,10 +48,12 @@ class Ticket extends Model
                 $ticket->phone = self::normalizePhone($ticket->phone);
             }
 
-            // Never allow blanking an assigned number.
+            // Never allow blanking an assigned number — except on rejection,
+            // which releases a claimed number back to the pool.
             if ($ticket->exists && $ticket->isDirty('ticket_number')
                 && blank($ticket->ticket_number)
-                && filled($ticket->getOriginal('ticket_number'))) {
+                && filled($ticket->getOriginal('ticket_number'))
+                && $ticket->ticket_status !== 'rejected') {
                 $ticket->ticket_number = $ticket->getOriginal('ticket_number');
             }
 

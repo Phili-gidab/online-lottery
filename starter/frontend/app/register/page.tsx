@@ -111,6 +111,7 @@ function RegisterInner() {
             lotteryDocumentId={lottery.documentId}
             lotteryTitle={lottery.title}
             ticketPrice={lottery.ticketPrice}
+            ticketDigits={lottery.ticketDigits}
           />
         </div>
       </div>

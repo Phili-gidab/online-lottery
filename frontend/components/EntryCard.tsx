@@ -104,6 +104,7 @@ export default function EntryCard({ lottery }: { lottery: Lottery }) {
               lotteryDocumentId={lottery.documentId}
               lotteryTitle={lottery.title}
               ticketPrice={lottery.ticketPrice}
+              ticketDigits={lottery.ticketDigits}
             />
           </>
         )}

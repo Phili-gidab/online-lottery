@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, FormEvent, ChangeEvent, DragEvent } from 'react';
-import { apiUrl, saveEntry } from '@/lib/api';
+import { useEffect, useRef, useState, FormEvent, ChangeEvent, DragEvent } from 'react';
+import { apiUrl, checkNumberAvailability, saveEntry } from '@/lib/api';
 import ConfettiBurst from '@/components/fx/ConfettiBurst';
 
 interface Props {
   lotteryDocumentId: string;
   lotteryTitle: string;
   ticketPrice?: number | null;
+  ticketDigits?: number;
 }
 
 const MAX_FILE_MB = 5;
@@ -15,20 +16,56 @@ const PHONE_RE = /^(\+251[79]\d{8}|0[79]\d{8})$/;
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
+type Avail = 'idle' | 'checking' | 'free' | 'taken' | 'short';
+
 export default function RegistrationForm({
   lotteryDocumentId,
   lotteryTitle,
   ticketPrice,
+  ticketDigits = 6,
 }: Props) {
   const [firstName, setFirstName] = useState('');
   const [fatherName, setFatherName] = useState('');
   const [phone, setPhone] = useState('');
   const [paymentRef, setPaymentRef] = useState('');
+  const [lucky, setLucky] = useState('');
+  const [avail, setAvail] = useState<Avail>('idle');
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [pendingNumber, setPendingNumber] = useState<string | null>(null);
+  const luckyRef = useRef('');
   const [receipt, setReceipt] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<string | null>(null);
+
+  // Debounced live availability for the chosen number.
+  useEffect(() => {
+    luckyRef.current = lucky;
+    if (lucky === '') {
+      setAvail('idle');
+      setSuggestions([]);
+      return;
+    }
+    if (lucky.length < ticketDigits) {
+      setAvail('short');
+      setSuggestions([]);
+      return;
+    }
+    setAvail('checking');
+    const wanted = lucky;
+    const timer = setTimeout(async () => {
+      const result = await checkNumberAvailability(lotteryDocumentId, wanted);
+      if (luckyRef.current !== wanted) return; // stale response
+      if (!result) {
+        setAvail('idle'); // offline — the server re-validates on submit anyway
+        return;
+      }
+      setAvail(result.available ? 'free' : 'taken');
+      setSuggestions(result.available ? [] : result.suggestions);
+    }, 450);
+    return () => clearTimeout(timer);
+  }, [lucky, ticketDigits, lotteryDocumentId]);
 
   function acceptFile(file: File | null) {
     setError(null);
@@ -74,6 +111,14 @@ export default function RegistrationForm({
       setError('Please enter the reference number from your payment receipt.');
       return;
     }
+    if (lucky !== '' && lucky.length !== ticketDigits) {
+      setError(`Your chosen number must be exactly ${ticketDigits} digits — or clear the field for a random one.`);
+      return;
+    }
+    if (lucky !== '' && avail === 'taken') {
+      setError(`Nº ${lucky} is already taken — pick another number or clear the field.`);
+      return;
+    }
     if (!receipt) {
       setError('Please attach a screenshot or photo of your payment receipt.');
       return;
@@ -87,6 +132,7 @@ export default function RegistrationForm({
       fd.append('phone', phone.trim());
       fd.append('paymentRef', paymentRef.trim());
       fd.append('lottery', lotteryDocumentId);
+      if (lucky !== '') fd.append('ticketNumber', lucky);
       fd.append('receipt', receipt);
 
       const res = await fetch(`${apiUrl()}/api/tickets`, {
@@ -101,6 +147,8 @@ export default function RegistrationForm({
           body?.error?.message ?? body?.message ?? `Submission failed (${res.status})`
         );
       }
+
+      setPendingNumber(body?.data?.ticketNumber ?? null);
 
       // Remember this entry on the device for the "My tickets" tracker.
       if (body?.data?.documentId) {
@@ -129,16 +177,18 @@ export default function RegistrationForm({
           <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-gold-400">
             Entry received · {lotteryTitle}
           </p>
-          <p className="mt-4 font-display text-4xl font-semibold text-paper-50">
-            Nº ······
+          <p className="digits mt-4 font-display text-4xl font-semibold text-paper-50">
+            Nº {pendingNumber ?? '······'}
           </p>
           <p className="mt-1 text-sm font-bold uppercase tracking-[0.2em] text-gold-300">
-            Pending verification
+            {pendingNumber ? 'Your number — pending verification' : 'Pending verification'}
           </p>
           <div className="mx-auto my-6 h-0 w-3/4 border-t-2 border-dashed border-paper-50/20" />
           <p className="text-sm leading-relaxed text-paper-100/75">
-            Thank you, {firstName}. Once our team verifies your payment, your
-            6-digit ticket number will be issued and sent to{' '}
+            Thank you, {firstName}.{' '}
+            {pendingNumber
+              ? <>Once our team verifies your payment, Nº {pendingNumber} is locked in and confirmed by SMS to{' '}</>
+              : <>Once our team verifies your payment, your ticket number will be issued and sent to{' '}</>}
             <strong className="text-paper-50">{phone}</strong>. You can check
             your status anytime with “Check my ticket”.
           </p>
@@ -200,6 +250,68 @@ export default function RegistrationForm({
         <p className="mt-1 text-xs text-ink-400">
           Your ticket number will be sent to this number by SMS.
         </p>
+      </div>
+
+      <div>
+        <label htmlFor="lucky" className={labelCls}>
+          Lucky number <span className="font-medium normal-case tracking-normal text-ink-400">(optional)</span>
+        </label>
+        <input
+          id="lucky"
+          type="text"
+          inputMode="numeric"
+          autoComplete="off"
+          maxLength={ticketDigits}
+          value={lucky}
+          onChange={(e) => setLucky(e.target.value.replace(/\D/g, '').slice(0, ticketDigits))}
+          placeholder={`Pick your own ${ticketDigits}-digit number`}
+          className={`digits ${inputCls} ${
+            avail === 'free'
+              ? 'border-pine-600 ring-2 ring-pine-600/15'
+              : avail === 'taken'
+                ? 'border-clay-600 ring-2 ring-clay-600/15'
+                : ''
+          }`}
+        />
+        {avail === 'idle' && (
+          <p className="mt-1 text-xs text-ink-400">
+            Leave empty and we&apos;ll draw a random number for you.
+          </p>
+        )}
+        {avail === 'short' && (
+          <p className="mt-1 text-xs text-ink-400">
+            {ticketDigits - lucky.length} more digit{ticketDigits - lucky.length === 1 ? '' : 's'}…
+          </p>
+        )}
+        {avail === 'checking' && (
+          <p className="mt-1 text-xs text-ink-400">Checking Nº {lucky}…</p>
+        )}
+        {avail === 'free' && (
+          <p className="mt-1 text-xs font-semibold text-pine-700">
+            ✓ Nº {lucky} is free — it&apos;s yours once your payment is verified.
+          </p>
+        )}
+        {avail === 'taken' && (
+          <div className="mt-1 text-xs">
+            <span className="font-semibold text-clay-600">✗ Nº {lucky} is taken.</span>
+            {suggestions.length > 0 && (
+              <span className="text-ink-400">
+                {' '}Free:{' '}
+                {suggestions.map((s, i) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setLucky(s)}
+                    className="digits font-bold text-gold-600 hover:underline"
+                  >
+                    {s}
+                    {i < suggestions.length - 1 ? ', ' : ''}
+                  </button>
+                ))}
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       <div>

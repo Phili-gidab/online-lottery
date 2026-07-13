@@ -24,10 +24,12 @@ class TicketController extends Controller
             'phone' => ['required', 'string', 'max:20', 'regex:' . self::PHONE_RE],
             'paymentRef' => ['required', 'string', 'max:64'],
             'lottery' => ['required', 'integer', 'exists:lotteries,id'],
+            'ticketNumber' => ['nullable', 'string', 'regex:/^\d{4,10}$/'],
             'receipt' => ['required', 'file', 'image', 'mimes:jpeg,jpg,png,webp,gif', 'max:5120'],
         ], [
             'phone.regex' => 'Please provide a valid Ethiopian phone number (e.g. 0912345678).',
             'receipt.required' => 'The receipt screenshot is required.',
+            'ticketNumber.regex' => 'The ticket number must contain digits only.',
         ]);
 
         $lottery = Lottery::findOrFail($data['lottery']);
@@ -55,23 +57,91 @@ class TicketController extends Controller
             ], 422);
         }
 
+        // Optional chosen number ("lucky number") — claimed while pending,
+        // released again if the entry is rejected.
+        $chosen = trim((string) ($data['ticketNumber'] ?? ''));
+        if ($chosen !== '') {
+            if (! preg_match('/^\d{' . $lottery->ticket_digits . '}$/', $chosen)) {
+                return response()->json([
+                    'error' => ['message' => "Ticket numbers in this lottery are exactly {$lottery->ticket_digits} digits."],
+                ], 422);
+            }
+            if (Ticket::where('ticket_number', $chosen)->exists()) {
+                return response()->json([
+                    'error' => ['message' => "Nº {$chosen} is already taken — pick another number, or leave the field empty for a random one."],
+                ], 422);
+            }
+        }
+
         $path = $request->file('receipt')->store('receipts', 'local');
 
-        $ticket = Ticket::create([
-            'lottery_id' => $lottery->id,
-            'first_name' => trim($data['firstName']),
-            'father_name' => trim($data['fatherName']),
-            'phone' => Ticket::normalizePhone($data['phone']),
-            'payment_ref' => $ref,
-            'receipt_path' => $path,
-            'ticket_status' => 'pending',
-            'source' => 'web',
-        ]);
+        try {
+            $ticket = Ticket::create([
+                'lottery_id' => $lottery->id,
+                'first_name' => trim($data['firstName']),
+                'father_name' => trim($data['fatherName']),
+                'phone' => Ticket::normalizePhone($data['phone']),
+                'payment_ref' => $ref,
+                'receipt_path' => $path,
+                'ticket_status' => 'pending',
+                'ticket_number' => $chosen !== '' ? $chosen : null,
+                'source' => 'web',
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Unique-constraint race: someone claimed the number a moment ago.
+            return response()->json([
+                'error' => ['message' => "Nº {$chosen} was taken just now — please pick another number."],
+            ], 422);
+        }
 
         // Deliberately minimal response: no PII echo.
         return response()->json([
-            'data' => ['documentId' => (string) $ticket->id, 'ticketStatus' => 'pending'],
+            'data' => [
+                'documentId' => (string) $ticket->id,
+                'ticketStatus' => 'pending',
+                'ticketNumber' => $ticket->ticket_number,
+            ],
         ], 201);
+    }
+
+    /**
+     * Live availability for the "choose your lucky number" field. Reveals
+     * only whether a number exists — never whose it is. Rate-limited.
+     */
+    public function availability(Request $request)
+    {
+        $data = $request->validate([
+            'lottery' => ['required', 'integer', 'exists:lotteries,id'],
+            'number' => ['required', 'string', 'regex:/^\d{4,10}$/'],
+        ]);
+
+        $lottery = Lottery::findOrFail($data['lottery']);
+        $digits = $lottery->ticket_digits;
+        $number = $data['number'];
+
+        $valid = preg_match('/^\d{' . $digits . '}$/', $number) === 1;
+        $taken = $valid && Ticket::where('ticket_number', $number)->exists();
+
+        // A few free alternatives when the wish can't be granted.
+        $suggestions = [];
+        if (! $valid || $taken) {
+            try {
+                for ($i = 0; $i < 3; $i++) {
+                    $suggestions[] = Ticket::generateUniqueNumber($digits);
+                }
+                $suggestions = array_values(array_unique($suggestions));
+            } catch (\Throwable) {
+                // Pool nearly full — suggestions are best-effort only.
+            }
+        }
+
+        return response()->json([
+            'data' => [
+                'available' => $valid && ! $taken,
+                'digits' => $digits,
+                'suggestions' => $suggestions,
+            ],
+        ]);
     }
 
     /**
