@@ -13,6 +13,7 @@ import {
 } from '@/lib/api';
 import { gsap, prefersReducedMotion } from '@/lib/gsap';
 import Reveal from '@/components/Reveal';
+import EnterLink from '@/components/EnterLink';
 import PrizeCard from '@/components/PrizeCard';
 import EntryCard from '@/components/EntryCard';
 import WinnersTicker from '@/components/WinnersTicker';
@@ -66,9 +67,8 @@ export default function HomePage() {
     <main>
       {/* ================= HERO — the app screen ================= */}
       <section
-        id="enter"
         ref={heroRef}
-        className="grain relative scroll-mt-20 overflow-hidden bg-pine-950"
+        className="grain relative overflow-hidden bg-pine-950"
       >
         {/* backdrop: the prize itself */}
         <div className="absolute inset-0">
@@ -141,8 +141,9 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* right: the entry card — the app */}
-          <div className="rise d3 lg:sticky lg:top-24">
+          {/* right: the entry card — the app. #enter lives here so every
+              "Get a ticket" CTA lands the user directly on the form. */}
+          <div id="enter" className="rise d3 scroll-mt-24 lg:sticky lg:top-24">
             {lottery ? (
               <EntryCard lottery={lottery} />
             ) : (
@@ -177,12 +178,9 @@ export default function HomePage() {
               </h2>
             </div>
             {lottery && (
-              <Link
-                href="/#enter"
-                className="btn-shine rounded-full bg-pine-900 px-6 py-3 text-sm font-bold text-paper-50 transition hover:bg-pine-800"
-              >
+              <EnterLink className="btn-shine rounded-full bg-pine-900 px-6 py-3 text-sm font-bold text-paper-50 transition hover:bg-pine-800">
                 Enter now →
-              </Link>
+              </EnterLink>
             )}
           </Reveal>
 

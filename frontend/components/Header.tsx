@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import EnterLink from '@/components/EnterLink';
 import MyTickets from '@/components/MyTickets';
 
 export default function Header() {
@@ -30,12 +31,9 @@ export default function Header() {
 
         <div className="flex items-center gap-3">
           <MyTickets />
-          <Link
-            href="/#enter"
-            className="btn-shine rounded-full bg-pine-900 px-5 py-2.5 text-sm font-bold text-paper-50 transition hover:bg-pine-800"
-          >
+          <EnterLink className="btn-shine rounded-full bg-pine-900 px-5 py-2.5 text-sm font-bold text-paper-50 transition hover:bg-pine-800">
             Get a ticket
-          </Link>
+          </EnterLink>
         </div>
       </div>
     </header>
