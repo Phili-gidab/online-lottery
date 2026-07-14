@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Lottery extends Model
 {
     protected $fillable = [
         'title', 'company', 'description', 'lottery_status', 'ticket_price',
         'ticket_digits', 'max_tickets', 'allow_multiple_wins', 'payment_instructions',
+        'poster_path',
     ];
 
     protected $casts = [
@@ -54,6 +56,9 @@ class Lottery extends Model
             'ticketDigits' => $this->ticket_digits,
             'maxTickets' => $this->max_tickets,
             'paymentInstructions' => $this->payment_instructions,
+            'poster' => $this->poster_path
+                ? ['url' => Storage::disk('public')->url($this->poster_path)]
+                : null,
             'draws' => $this->draws->map(fn (Draw $d) => $d->toApi())->all(),
         ];
     }

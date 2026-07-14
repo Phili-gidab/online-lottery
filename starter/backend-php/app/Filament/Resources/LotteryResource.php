@@ -46,6 +46,12 @@ class LotteryResource extends Resource
             Forms\Components\Textarea::make('payment_instructions')
                 ->helperText('Shown on the public entry page — bank account, Telebirr number, etc.')
                 ->columnSpanFull(),
+            Forms\Components\FileUpload::make('poster_path')
+                ->label('Campaign poster')
+                ->disk('public')->directory('posters')->visibility('public')
+                ->image()->maxSize(8192)
+                ->helperText('Portrait promo poster (JPG/PNG, max 8 MB) — shown on the homepage with share & download buttons.')
+                ->columnSpanFull(),
         ])->columns(2);
     }
 

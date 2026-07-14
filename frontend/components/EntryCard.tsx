@@ -35,7 +35,7 @@ export default function EntryCard({ lottery }: { lottery: Lottery }) {
   return (
     <div className="overflow-hidden rounded-3xl bg-paper-50 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.6)]">
       {/* card header */}
-      <div className="flex items-center justify-between gap-3 border-b border-paper-200 bg-white px-6 py-4">
+      <div className="flex items-center justify-between gap-3 border-b border-paper-200 bg-white px-5 py-3">
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold-600">
             {soldOut ? 'Sold out' : 'Enter now'}
@@ -51,10 +51,10 @@ export default function EntryCard({ lottery }: { lottery: Lottery }) {
         )}
       </div>
 
-      <div className="p-6">
+      <div className="p-5">
         {/* limited-edition progress — only when the campaign has a cap */}
         {pct !== null && (
-          <div className="mb-5">
+          <div className="mb-4">
             <div className="mb-1.5 flex items-baseline justify-between text-xs">
               <span className="font-bold uppercase tracking-[0.14em] text-ink-600">
                 {sold!.toLocaleString()} of {max!.toLocaleString()} tickets claimed
@@ -86,7 +86,7 @@ export default function EntryCard({ lottery }: { lottery: Lottery }) {
           <>
             {/* step 1 — how to pay */}
             {lottery.paymentInstructions && (
-              <details className="faq group mb-5 rounded-xl border border-gold-500/40 bg-gold-200/25 px-4 py-3">
+              <details className="faq group mb-4 rounded-xl border border-gold-500/40 bg-gold-200/25 px-4 py-2.5">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-xs font-bold uppercase tracking-[0.16em] text-gold-700">
                   Step 1 — how to pay
                 </summary>
@@ -97,7 +97,7 @@ export default function EntryCard({ lottery }: { lottery: Lottery }) {
             )}
 
             {/* step 2 — the form */}
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-ink-400">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-ink-400">
               Step 2 — register your entry
             </p>
             <RegistrationForm

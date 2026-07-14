@@ -15,6 +15,7 @@ import { gsap, prefersReducedMotion } from '@/lib/gsap';
 import Reveal from '@/components/Reveal';
 import EnterLink from '@/components/EnterLink';
 import PrizeCard from '@/components/PrizeCard';
+import PosterSection from '@/components/PosterSection';
 import EntryCard from '@/components/EntryCard';
 import WinnersTicker from '@/components/WinnersTicker';
 import FlagshipGallery from '@/components/FlagshipGallery';
@@ -83,7 +84,7 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-br from-pine-950 via-pine-950/90 to-pine-900/75" />
         </div>
 
-        <div className="relative mx-auto grid max-w-6xl items-start gap-10 px-4 pb-16 pt-12 sm:px-6 lg:grid-cols-[1fr_450px] lg:gap-14 lg:pb-24 lg:pt-16">
+        <div className="relative mx-auto grid max-w-6xl items-start gap-10 px-4 pb-12 pt-10 sm:px-6 lg:grid-cols-[1fr_440px] lg:gap-12 lg:pb-14 lg:pt-12">
           {/* left: the pitch */}
           <div>
             <p className="rise d1 inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-pine-900/80 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-gold-300">
@@ -95,7 +96,7 @@ export default function HomePage() {
                   : 'Next campaign coming soon'}
             </p>
 
-            <h1 className="rise d2 mt-6 font-display text-4xl font-semibold leading-[1.06] tracking-tight text-paper-50 sm:text-5xl lg:text-6xl">
+            <h1 className="rise d2 mt-5 font-display text-4xl font-semibold leading-[1.06] tracking-tight text-paper-50 sm:text-5xl lg:text-6xl">
               One ticket.
               <br />
               Three prizes.
@@ -103,7 +104,7 @@ export default function HomePage() {
               <em className="shimmer-text">Your new address.</em>
             </h1>
 
-            <p className="rise d3 mt-5 max-w-md text-lg leading-relaxed text-paper-100/75">
+            <p className="rise d3 mt-4 max-w-md text-lg leading-relaxed text-paper-100/75">
               Pay once, upload your receipt, and your ticket enters{' '}
               <strong className="text-paper-50">every draw</strong> — the house,
               the car, the phone.
@@ -111,13 +112,13 @@ export default function HomePage() {
 
             {/* the draws, at a glance */}
             {lottery && (
-              <ul className="rise d4 mt-7 max-w-md space-y-2">
+              <ul className="rise d4 mt-5 max-w-md space-y-2">
                 {lottery.draws.map((d) => {
                   const meta = CATEGORY_META[d.category] ?? CATEGORY_META.other;
                   return (
                     <li
                       key={d.documentId}
-                      className="flex items-center gap-3 rounded-xl border border-paper-50/10 bg-paper-50/5 px-4 py-2.5 text-sm backdrop-blur-sm"
+                      className="flex items-center gap-3 rounded-xl border border-paper-50/10 bg-paper-50/5 px-4 py-2 text-sm backdrop-blur-sm"
                     >
                       <span className="text-xl">{meta.icon}</span>
                       <span className="font-semibold text-paper-50">{d.prizeName}</span>
@@ -132,7 +133,7 @@ export default function HomePage() {
               </ul>
             )}
 
-            <p className="rise d5 mt-6 text-xs text-paper-100/40">
+            <p className="rise d5 mt-5 text-xs text-paper-100/40">
               18+ only · Manual payment via Telebirr / bank transfer · Winners
               notified by SMS &amp; published here ·{' '}
               <Link href="/#how" className="underline hover:text-gold-300">
@@ -202,6 +203,9 @@ export default function HomePage() {
 
       {/* ================= FLAGSHIP GALLERY ================= */}
       <FlagshipGallery />
+
+      {/* ================= CAMPAIGN POSTER ================= */}
+      {lottery && <PosterSection lottery={lottery} />}
 
       {/* ================= HOW IT WORKS ================= */}
       <HowItWorks />

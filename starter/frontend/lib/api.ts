@@ -35,6 +35,7 @@ export interface Lottery {
   ticketDigits: number;
   maxTickets?: number | null;
   paymentInstructions?: string | null;
+  poster?: Media | null;
   draws: Draw[];
 }
 

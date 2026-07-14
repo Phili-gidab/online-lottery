@@ -202,8 +202,8 @@ export default function RegistrationForm({
   const labelCls = 'mb-1.5 block text-xs font-bold uppercase tracking-[0.14em] text-ink-600';
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5" noValidate>
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+    <form onSubmit={onSubmit} className="space-y-4" noValidate>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="firstName" className={labelCls}>
             First name
@@ -234,6 +234,7 @@ export default function RegistrationForm({
         </div>
       </div>
 
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div>
         <label htmlFor="phone" className={labelCls}>
           Phone number
@@ -247,8 +248,8 @@ export default function RegistrationForm({
           className={inputCls}
           required
         />
-        <p className="mt-1 text-xs text-ink-400">
-          Your ticket number will be sent to this number by SMS.
+        <p className="mt-1 text-[11px] text-ink-400">
+          We&apos;ll SMS your ticket number here.
         </p>
       </div>
 
@@ -274,17 +275,17 @@ export default function RegistrationForm({
           }`}
         />
         {avail === 'idle' && (
-          <p className="mt-1 text-xs text-ink-400">
+          <p className="mt-1 text-[11px] text-ink-400">
             Leave empty and we&apos;ll draw a random number for you.
           </p>
         )}
         {avail === 'short' && (
-          <p className="mt-1 text-xs text-ink-400">
+          <p className="mt-1 text-[11px] text-ink-400">
             {ticketDigits - lucky.length} more digit{ticketDigits - lucky.length === 1 ? '' : 's'}…
           </p>
         )}
         {avail === 'checking' && (
-          <p className="mt-1 text-xs text-ink-400">Checking Nº {lucky}…</p>
+          <p className="mt-1 text-[11px] text-ink-400">Checking Nº {lucky}…</p>
         )}
         {avail === 'free' && (
           <p className="mt-1 text-xs font-semibold text-pine-700">
@@ -313,6 +314,7 @@ export default function RegistrationForm({
           </div>
         )}
       </div>
+      </div>
 
       <div>
         <label htmlFor="paymentRef" className={labelCls}>
@@ -327,7 +329,7 @@ export default function RegistrationForm({
           className={inputCls}
           required
         />
-        <p className="mt-1 text-xs text-ink-400">
+        <p className="mt-1 text-[11px] text-ink-400">
           The transaction/reference number printed on your bank or Telebirr receipt.
         </p>
       </div>
@@ -342,7 +344,7 @@ export default function RegistrationForm({
           }}
           onDragLeave={() => setDragOver(false)}
           onDrop={onDrop}
-          className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-8 text-center transition ${
+          className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-4 py-5 text-center transition ${
             dragOver
               ? 'border-gold-500 bg-gold-200/30'
               : 'border-paper-300 bg-paper-100/60 hover:border-gold-500'
@@ -357,11 +359,11 @@ export default function RegistrationForm({
             />
           ) : (
             <>
-              <span className="text-3xl">🧾</span>
-              <span className="mt-2 text-sm font-semibold text-ink-900">
+              <span className="text-2xl">🧾</span>
+              <span className="mt-1.5 text-sm font-semibold text-ink-900">
                 Drop your receipt here, or tap to choose
               </span>
-              <span className="mt-1 text-xs text-ink-400">
+              <span className="mt-0.5 text-[11px] text-ink-400">
                 JPEG / PNG / WebP · max {MAX_FILE_MB} MB
               </span>
             </>
@@ -394,14 +396,14 @@ export default function RegistrationForm({
       <button
         type="submit"
         disabled={status === 'submitting'}
-        className="btn-shine w-full rounded-full bg-gold-400 px-6 py-4 text-base font-bold text-pine-950 transition hover:bg-gold-300 disabled:cursor-not-allowed disabled:opacity-60"
+        className="btn-shine w-full rounded-full bg-gold-400 px-6 py-3 text-base font-bold text-pine-950 transition hover:bg-gold-300 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {status === 'submitting'
           ? 'Submitting…'
           : `Submit my entry${ticketPrice ? ` — ${ticketPrice.toLocaleString()} ETB paid` : ''}`}
       </button>
 
-      <p className="text-center text-xs leading-relaxed text-ink-400">
+      <p className="text-center text-[11px] leading-relaxed text-ink-400">
         Your ticket becomes active after our team verifies your payment. One
         entry is one ticket, valid across all draws of this lottery. 18+ only.
       </p>
